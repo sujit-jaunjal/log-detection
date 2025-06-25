@@ -1,32 +1,44 @@
-- name: "Multiple Failed Logins from Same IP"
-  type: "threshold"
-  log_type: "apache"
+- name: Multiple Failed Logins from Same IP
+  type: threshold
+  log_type: apache
   enabled: true
-  description: "Alerts when more than 5 failed login attempts (HTTP 401) are detected from a single IP address within 1 minute."
-  priority: "high"
+  description: >-
+    Alerts when more than 5 failed login attempts (HTTP 401) are detected from a
+    single IP address within 1 minute.
+  priority: high
   conditions:
-    - field: "status"
-      operator: "equals"
+    - field: status
+      operator: equals
       value: 401
   aggregation:
-    group_by: "ip"
+    group_by: ip
     count: 6
-    timespan: "1m"
-
-- name: "Potential SQL Injection Attempt"
-  type: "pattern"
-  log_type: "apache"
+    timespan: 1m
+- name: Potential SQL Injection Attempt
+  type: pattern
+  log_type: apache
   enabled: true
-  description: "Detects common SQL injection patterns in the request path or query."
-  priority: "critical"
+  description: Detects common SQL injection patterns in the request path or query.
+  priority: critical
   conditions:
-    - field: "path"
-      operator: "contains_any"
+    - field: path
+      operator: contains_any
       value:
-        - "OR 1=1"
-        - "UNION SELECT"
-        - "';-'"
-        - "--"
-
-
-
+        - OR 1=1
+        - UNION SELECT
+        - ''';-'''
+        - '--'
+- name: Path Traversal Attempt
+  type: pattern
+  log_type: apache
+  enabled: true
+  description: Detects attempts to access sensitive files using path traversal patterns.
+  priority: high
+  conditions:
+    - field: path
+      operator: contains_any
+      value:
+        - ../
+        - ..\
+        - /etc/passwd
+        - C:\Windows\System32

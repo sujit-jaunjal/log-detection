@@ -2,6 +2,8 @@ const express = require('express');
 const http = require('http');
 const { Server } = require("socket.io");
 const Monitor = require('./monitor');
+const rulesApi = require('./api/rules');
+const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
@@ -11,6 +13,10 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
+
+app.use(cors());
+app.use(express.json());
+app.use('/api/rules', rulesApi);
 
 const PORT = process.env.PORT || 4000;
 
@@ -31,10 +37,4 @@ server.listen(PORT, () => {
     // Start the monitoring system and pass the io instance
     const monitor = new Monitor(io);
     monitor.start();
-
-    // Forward new logs to the frontend via WebSockets
-    monitor.logIngestor.on('new-logs', ({ logs }) => {
-        const parsedLogs = monitor.logProcessor.process(logs);
-        io.emit('new-logs', parsedLogs);
-    });
 }); 
