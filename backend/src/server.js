@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require("socket.io");
+const Monitor = require('./monitor');
 
 const app = express();
 const server = http.createServer(app);
@@ -18,12 +19,22 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('A user connected:', socket.id);
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log('User disconnected:', socket.id);
     });
 });
 
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+
+    // Start the monitoring system and pass the io instance
+    const monitor = new Monitor(io);
+    monitor.start();
+
+    // Forward new logs to the frontend via WebSockets
+    monitor.logIngestor.on('new-logs', ({ logs }) => {
+        const parsedLogs = monitor.logProcessor.process(logs);
+        io.emit('new-logs', parsedLogs);
+    });
 }); 
