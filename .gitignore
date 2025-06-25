@@ -1,0 +1,7 @@
+# Logs
+logs/
+*.log
+generator-error.log
+
+# Dependencies
+**/node_modules 

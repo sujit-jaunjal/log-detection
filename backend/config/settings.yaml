@@ -1,0 +1,25 @@
+log_generation:
+  apache:
+    rate: 1000  # logs per second
+    batch_size: 100  # number of logs to write in one batch
+    output_file: "../logs/apache_access.log"
+    format: "combined"  # common, combined, or custom
+    patterns:
+      normal: 80  # percentage of normal traffic
+      suspicious: 20  # percentage of suspicious traffic
+    worker_threads: 4  # number of parallel workers for log generation
+
+  windows:
+    rate: 500  # logs per second
+    batch_size: 50
+    output_file: "../logs/windows_events.log"
+    patterns:
+      normal: 90
+      suspicious: 10
+    worker_threads: 2
+
+monitoring:
+  watch_patterns:
+    - "../logs/*.log"
+  batch_size: 1000  # number of lines to process in one batch
+  processing_threads: 4  # number of threads for log processing
