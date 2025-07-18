@@ -21,7 +21,7 @@ Make sure it is customizable so that we can add our custom rules to flag suspici
   - `@mui/material` for UI components
   - `react-query` for API data management
   - `socket.io-client` for real-time updates
-  - `recharts` for data visualization
+  - `recharts` for data visualizations
   - `@monaco-editor/react` for rule editing
 
 ### 2. Backend (Node.js)
