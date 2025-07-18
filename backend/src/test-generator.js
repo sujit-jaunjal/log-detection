@@ -5,7 +5,7 @@ async function main() {
         console.log('Starting Apache log generator...');
         const generator = await GeneratorFactory.createGenerator('apache');
         
-        // Start generating logs
+        // Start generating log
         await generator.start();
 
         // Run for 60 seconds
